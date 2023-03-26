@@ -1,0 +1,26 @@
+jdbc操作总结为以下4点核心：
+1，练习了jdbc的八个基本使用步骤模拟代码在com.lingfeng.test.JDBCTest
+
+2，在com.lingfeng.utils.JDBCUtils优化了注册驱动，获取连接，回收连接并
+在com.lingfeng.test.JDBCTestDao.testInsert方法中测试
+        a：引入驱动包以及druid连接池jar包；b：连接池工具类中创建并读取了
+ 一个druid.properties（包含数据库连接的基本参数，如：url,driver,连接数据
+ 库的用户名密码以及初始化连接数量和连接池的最大连接数等等参数）c：编
+ 写实现连接池作用（对外提供一个连接对象以及获取连接和回收连接的方法）
+
+3，基于第2点中创建的连接池版本1.0，在com.lingfeng.utils.JDBCUtilsV2中优化
+相对于版本一（com.lingfeng.utils.JDBCUtils）就是优化了用于事务管理，增加了
+ThreadLocal<Connection>，因此后续摒弃版本1.0JDBCUtils，用版本2.0（JDBC
+UtilsV2）
+
+4，基于第3点，在com.lingfeng.utils.BaseDao中优化了其他五个步骤，使得其他
+数据库持久层（Dao层）只需要继承BaseDao就能实现需要的dql和非dql的crud操作
+在com.lingfeng.test.JDBCTestDao.testSelect测试了优化后的dql操作，其他操作测
+试方法相通
+
+jdbc优化以后使用方法步骤如下：
+         1：导入druid连接池依赖包以及数据库连接驱动包
+         2：调用连接池JDBCUtilsV2中的方法完成注册驱动，获取连接，回收连接等三步骤
+         3：继承BaseDao后使用BaseDao中的方法实现crud操作完成其他五步骤（编写sql
+         ， 创建pre paredstatement，占位符赋值，发送执行sql，结果集解析【如果是dql
+         操作】）======至此jdbc的八个步骤完成
